@@ -1,0 +1,19 @@
+{
+  "name":        "git-blog",
+  "description": "Tutorial blogging using git.",
+  "url":         "http://github.com/Shadowfiend/git-blog",
+  "author":      "Antonio Salazar Cardozo <savedfastcool@gmail.com>",
+  "dependencies": {
+    "coffee-script": "1.2.0",
+    "vows": ">=0.6.2",
+    "eyes": "0.1.7",
+    "graft": "https://github.com/Shadowfiend/graft/tarball/master",
+    "express": "2.5.8",
+    "underscore": "1.3.1",
+    "underscore.string": "2.0.0",
+    "mongodb": "0.9.7",
+    "bcrypt": "0.5.0",
+    "jade": "0.22.0"
+  },
+  "version":      "0.1.0"
+}
