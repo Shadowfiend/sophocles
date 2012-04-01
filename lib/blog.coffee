@@ -1,5 +1,8 @@
 graft = require('graft').graft
 https = require('https')
+_ = require 'underscore'
+_.str = require 'underscore.string'
+_.mixin _.str.exports()
 
 postsCollection = null
 
@@ -57,10 +60,12 @@ fetchPostFromGithub = (id, callback) ->
       insertPost = ->
         validCommits = commits.filter (commit) -> commit
 
-        commitsForRecord = validCommits.map (commit) ->
+        commitsForRecord = validCommits.reverse().map (commit) ->
+          sha: commit.sha
           message: commit.commit.message
           stats: commit.stats
           files: commit.files
+          hasParent: commit.parents.length > 0
 
         postsCollection.insert
           repoName: id
@@ -132,8 +137,44 @@ renderPost = (request, response) ->
       }, failErrors(response, (html) ->
         graft html, {
           '.title': post.title
-          '.text li': post.commits.map (commit) -> commit.message
-          '.diffs li': post.commits.map (commit) -> commit.patch
+          '.commit': post.commits.map (commit) ->
+            commitGraft =
+              '.message': commit.message
+
+            if ! commit.hasParent
+              commitGraft['.files'] = ($files) -> $files.remove()
+            else
+              commitGraft['.files li'] = commit.files.map (file) ->
+                fileGraft =
+                  '.filename': file.filename
+
+                if file.patch?
+                  fileGraft['.patch li'] = file.patch.split("\n").map (patchLine) ->
+                    uPatchLine = _(patchLine)
+                    patchType =
+                      if uPatchLine.startsWith("@@")
+                        "time-label"
+                      else if uPatchLine.startsWith("+")
+                        patchLine = patchLine.substring(1)
+
+                        "addition"
+                      else if uPatchLine.startsWith("-")
+                        patchLine = patchLine.substring(1)
+
+                        "deletion"
+                      else
+                        "unchanged"
+
+                    ($li) ->
+                      $li
+                        .text(patchLine)
+                        .attr('class', patchType)
+                else
+                  fileGraft['.patch'] = ($patch) -> $patch.remove()
+
+                fileGraft
+
+            commitGraft
         }, failErrors response, (grafted) ->
           response.send grafted, { 'Content-Type': 'text/html' })
     else
