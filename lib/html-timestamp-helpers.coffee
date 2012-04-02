@@ -1,4 +1,7 @@
 fs = require 'fs'
+_ = require 'underscore'
+_.str = require 'underscore.string'
+_.mixin _.str.exports()
 
 STATIC_FILE_ROOT = 'public'
 fileTimestampCache = {}
