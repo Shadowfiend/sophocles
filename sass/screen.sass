@@ -1,0 +1,75 @@
+// Imports -------------------------------------------------------------------
+
+@import base
+@import compass/typography
+
+/* Layout ------------------------------------------------------------------
+
+#content
+  +container
+  +susy-grid-background
+
+.message br
+  display: none
+
+h1
+  +full
+
+.commit
+  +full
+  +clearfix
+
+  .message, .diffs
+    +columns(6)
+
+  .message
+    +alpha
+
+  .diffs
+    +omega
+
+  .main-commit
+    +full
+    width: auto
+
+    + .diffs
+      display: none
+
+.diffs
+  h3.filename
+    +adjust-font-size-to(16px)
+
+    border: 1px solid rgb(216,216,216)
+    background: rgb(250,250,250)
+    background: +linear-gradient(rgb(250,250,250), rgb(234,234,234))
+
+    margin: 0
+
+  h3.filename, li
+    padding: 0 5px
+
+  .patch
+    border: solid rgb(216,216,216)
+    border-width: 0 1px 1px
+
+    font-family: 'Monaco', 'Bitstream Vera Sans Mono', 'Lucida Console', 'Courier', monospace
+    +adjust-font-size-to(12px, 0.75)
+
+    overflow-x: auto
+
+    background: rgb(248,248,255)
+
+    li
+      white-space: pre
+
+  ul
+    padding-left: 0
+    list-style-type: none
+
+  .label
+    background: rgb(234,242,245)
+    color: rgb(153,153,153)
+  .addition
+    background-color: rgb(221, 255, 221)
+  .deletion
+    background-color: rgb(255, 221, 221)
