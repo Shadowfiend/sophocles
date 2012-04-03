@@ -1,5 +1,7 @@
 graft = require('graft').graft
 https = require('https')
+markdown = require 'github-flavored-markdown'
+
 _ = require 'underscore'
 _.str = require 'underscore.string'
 _.mixin _.str.exports()
@@ -139,7 +141,8 @@ renderPost = (request, response) ->
           '.title': post.title
           '.commit': post.commits.map (commit) ->
             commitGraft =
-              '.message': commit.message
+              '.message': ($elt) -> $elt.html markdown.parse(commit.message)
+              '.message[class+]': if commit.hasParent then '' else 'main-commit'
 
             if ! commit.hasParent
               commitGraft['.files'] = ($files) -> $files.remove()
