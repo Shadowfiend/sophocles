@@ -147,7 +147,7 @@ renderPost = (request, response) ->
             if ! commit.hasParent
               commitGraft['.files'] = ($files) -> $files.remove()
             else
-              commitGraft['.files li'] = commit.files.map (file) ->
+              commitGraft['.files > li'] = commit.files.map (file) ->
                 fileGraft =
                   '.filename': file.filename
 
