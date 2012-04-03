@@ -156,7 +156,7 @@ renderPost = (request, response) ->
                     uPatchLine = _(patchLine)
                     patchType =
                       if uPatchLine.startsWith("@@")
-                        "time-label"
+                        "label"
                       else if uPatchLine.startsWith("+")
                         patchLine = patchLine.substring(1)
 
