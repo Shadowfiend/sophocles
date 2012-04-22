@@ -3,7 +3,7 @@ fs = require 'fs'
 coffee = require 'coffee-script'
 
 csPathForFilename = (filename) ->
-  "#{__dirname}/../client-lib/#{filename}.coffee"
+  "#{__dirname}/../public/javascripts/#{filename}.coffee"
 
 renderCoffeeFile = (request, response) ->
   fs.readFile csPathForFilename(request.params.file), 'utf-8', (err, coffeeScript) ->
