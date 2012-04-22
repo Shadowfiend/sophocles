@@ -15,7 +15,8 @@ util = require 'util'
 utils = require './lib/utils'
 # Rendering modules
 blog = require './lib/blog'
-renderingModules = [blog]
+compiledCoffeeServer = require './lib/compiled-coffee-server'
+renderingModules = [blog, compiledCoffeeServer]
 
 # App-wide HTML helpers.
 htmlTimestampHelpers = require './lib/html-timestamp-helpers'

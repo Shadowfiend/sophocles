@@ -126,7 +126,7 @@ renderPosts = (request, response) ->
       }, failErrors response, (grafted) ->
         response.send grafted, { 'Content-Type': 'text/html' }
     )
-      
+
 renderPost = (request, response) ->
   withPostsQuery { repoName: request.params.id }, response, (posts) ->
     if posts.length
