@@ -143,6 +143,7 @@ renderPost = (request, response) ->
             commitGraft =
               '.message': ($elt) -> $elt.html markdown.parse(commit.message)
               '.message[class+]': if commit.hasParent then '' else 'main-commit'
+              '.message br': ($elt) -> $elt.replaceWith(' ')
 
             if ! commit.hasParent
               commitGraft['.files'] = ($files) -> $files.remove()
