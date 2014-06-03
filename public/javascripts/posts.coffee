@@ -5,8 +5,7 @@ adjustMessageHeight = ->
 
 $(document).ready ->
   $commits = $('section.commit')
-  $commits.each ->
-    commitOffsets.push [this.offsetTop, this]
+  $commits.each -> commitOffsets.push [this.offsetTop, this]
 
   bodyHeight = document.body.offsetHeight
 
@@ -20,42 +19,112 @@ $(document).ready ->
 
 $(window).resize adjustMessageHeight
 
-lastScrollTop = 0
-currentConsiderationIndex = 0
 signOf = (num) -> if num < 0 then -1 else 1
 compareBySign = (sign, comparator, start, end) ->
   if sign < 0
     start < comparator
   else
     comparator < end
-$(document).scroll (event) ->
-  scrollTop = document.scrollTop || document.body.scrollTop
-  scrollChange = scrollTop - lastScrollTop
-  lastScrollTop = scrollTop
 
-  commit = commitOffsets[currentConsiderationIndex][1]
-  nextConsiderationIndex = currentConsiderationIndex + signOf(scrollChange)
-  nextOffsetParts = commitOffsets[nextConsiderationIndex]
+# Runs a scroll to the next element. If scrollChange would scroll past
+# the next element, returns the remaining scrollChange. Otherwise, returns
+# 0.
+scrollToNextElement = (scrollChange, lastIndex, lastTop) ->
+  sign = signOf scrollChange
 
-  if nextOffsetParts?
-    [nextOffset, nextCommit] = nextOffsetParts
+  index = lastIndex + sign
+  [offsetTop, element] = commitOffsets[index]
+  diffChild = $(element).children('.diffs')[0]
 
-  scrollingElement = undefined
-  diffs = $(commit).children('.diffs')
-  nextDiffs = $(nextCommit).children('.diffs')
-  if parseInt($(commit).css('top')) * signOf(scrollChange) <= 0 &&
-     compareBySign(signOf(scrollChange), diffs[0].scrollTop, 0, diffs[0].scrollHeight - diffs[0].offsetHeight)
-    scrollingElement = diffs[0]
-  else if parseInt($(nextCommit).css('top')) * signOf(scrollChange) <= 0
-    if compareBySign(signOf(scrollChange), nextDiffs[0].scrollTop, 0, nextDiffs[0].scrollHeight - nextDiffs[0].offsetHeight)
-      scrollingElement = nextDiffs[0]
+  if diffChild?
+    [scrollChange, lastTop] = scrollNext diffChild, scrollChange, lastTop
+
+  console.log "Post internal: #{scrollChange}"
+  return [scrollChange, lastIndex, lastTop, 0] if scrollChange <= 0
+
+  actualScroll =
+    if sign is 1
+      remainingScroll = scrollChange - (element.scrollHeight - element.offsetHeight)
+      console.log "Externally remaining: #{remainingScroll} vs #{scrollChange}"
+      Math.min Math.abs(scrollChange), remainingScroll
     else
-      currentConsiderationIndex = nextConsiderationIndex
+      currentScroll = element.scrollTop
+      Math.min Math.abs(scrollChange), currentScroll
+  
+  if (sign is 1 and remainingScroll > scrollChange) ||
+     element.scrollTop > Math.abs(scrollChange)
+    index = lastIndex
+  [scrollChange - actualScroll, index, lastTop + sign * actualScroll, actualScroll]
 
-  if scrollingElement?
-    scrollingElement.scrollTop += scrollChange
-  else
-    $('h1, section.commit').each ->
-      $this = $(this)
-      top = parseInt $this.css('top')
-      $this.css 'top': "#{top - scrollChange}px"
+scrollNext = (element, scrollChange, lastTop) ->
+  sign = signOf scrollChange
+
+  actualScroll =
+    if sign is 1
+      remainingScroll = element.scrollHeight - element.offsetHeight - element.scrollTop
+      console.log "Remaining: #{remainingScroll} vs #{scrollChange}"
+      Math.min Math.abs(scrollChange), remainingScroll
+    else
+      currentScroll = element.scrollTop
+      Math.min Math.abs(scrollChange), currentScroll
+
+  element.scrollTop += sign * actualScroll
+  console.log "Internal: #{sign * actualScroll}, #{element.scrollTop}", element
+  [scrollChange - actualScroll, lastTop + sign * actualScroll]
+  
+currentIndex = -1
+lastScrollTop = 0
+$(document).scroll (event) ->
+  scrollTop = originalTop = document.scrollTop || document.body.scrollTop
+  currentScrollChange = scrollChange = scrollTop - lastScrollTop
+
+  console.log "Total change: #{scrollChange} @ #{currentIndex}."
+  overallChange = 0
+  while currentScrollChange > 0
+    [currentScrollChange, currentIndex, scrollTop, actualScroll] =
+      scrollToNextElement currentScrollChange, currentIndex, scrollTop
+
+    console.log "Result: #{actualScroll}; at #{currentScrollChange}"
+
+    overallChange += actualScroll
+
+  lastScrollTop = scrollTop
+  console.log "In the end, #{overallChange}"
+
+  $('h1, section.commit').each ->
+    $this = $(this)
+    top = parseInt $this.css('top')
+    $this.css 'top': "#{top - overallChange}px"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
