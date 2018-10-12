@@ -27,9 +27,7 @@ Sophocles is copyright me, Antonio Salazar Cardozo, and licensed uner
 the terms of the MIT License. No warranties are made, express or
 implied. See the LICENSE file in this same directory for more details.
 
-I have a rather sporadically updated blog at http://shadowfiend.posterous.com/.
+I have a rather sporadically updated blog at http://shadowfiend.svbtle.com/.
 
-I am the Chief Software Engineer at [OpenStudy](http://openstudy.com),
-where we're working on changing the face of education as we know it
-using [Scala](http://scala-lang.org), [Lift](http://liftweb.net), and a
-variety of other tools.
+I am the Head of Engineering at [Thesis](https://thesis.co), where we're
+working on bringing power back to the individual through decentralized systems.
