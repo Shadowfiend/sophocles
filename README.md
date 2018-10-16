@@ -1,3 +1,7 @@
+**ABANDONWARE**
+
+This repo is abandonware :(
+
 # Sophocles
 
 Sophocles is a re-imagining of our approach to writing tutorial
